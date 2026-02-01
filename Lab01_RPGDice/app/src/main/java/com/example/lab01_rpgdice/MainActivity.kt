@@ -36,8 +36,9 @@ fun RPGDiceScreen() {
 
 @Preview(showBackground = true)
 @Composable
-fun GreetingPreview() {
-    Lab01_RPGDiceTheme {
-        Greeting("Android")
+fun StatRow(name: String, value: Int, onRoll: () -> Unit) {
+    Column {
+        Text("$name: $value")
+        Button(onClick = onRoll) { Text("Roll $name") }
     }
 }
