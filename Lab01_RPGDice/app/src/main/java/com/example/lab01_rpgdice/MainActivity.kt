@@ -25,11 +25,13 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
+fun RPGDiceScreen() {
+    var vitality by remember { mutableIntStateOf(10) }
+    var dexterity by remember { mutableIntStateOf(10) }
+    var wisdom by remember { mutableIntStateOf(10) }
+    Column {
+        Text("RPG Dice Roller")
+    }
 }
 
 @Preview(showBackground = true)
