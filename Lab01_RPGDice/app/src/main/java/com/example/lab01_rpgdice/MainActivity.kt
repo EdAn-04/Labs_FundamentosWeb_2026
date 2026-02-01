@@ -31,6 +31,16 @@ fun RPGDiceScreen() {
     var wisdom by remember { mutableIntStateOf(10) }
     Column {
         Text("RPG Dice Roller")
+
+        val total = vitality + dexterity + wisdom
+
+        Text("Total: $total")
+        // Validaciones
+        if (total < 30) {
+            Text("Re-roll recommended!", color = Color.Red)
+        } else if (total >= 50) {
+            Text("Godlike!", color = Color(0xFFFFD700))
+        }
     }
 }
 
