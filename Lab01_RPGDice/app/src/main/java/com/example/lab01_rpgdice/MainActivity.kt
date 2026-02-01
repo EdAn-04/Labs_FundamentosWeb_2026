@@ -52,3 +52,11 @@ fun StatRow(name: String, value: Int, onRoll: () -> Unit) {
         Button(onClick = onRoll) { Text("Roll $name") }
     }
 }
+
+@Preview(showBackground = true)
+@Composable
+fun RPGDiceScreenPreview() {
+    Lab01_RPGDiceTheme {
+        RPGDiceScreen()
+    }
+}
