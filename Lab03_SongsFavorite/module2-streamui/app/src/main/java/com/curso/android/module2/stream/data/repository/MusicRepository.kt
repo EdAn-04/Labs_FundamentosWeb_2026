@@ -91,4 +91,11 @@ interface MusicRepository {
      * @return Lista de playlists guardadas
      */
     fun getPlaylists(): List<Playlist>
+
+    /**
+     * Alterna el estado favorito de una canción.
+     *
+     * @param songId ID de la canción a modificar
+     */
+    fun toggleFavorite(songId: String)
 }
