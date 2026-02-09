@@ -86,7 +86,7 @@ class MockMusicRepository : MusicRepository {
          * colorSeed: Valores diferentes generan gradientes únicos.
          * Usamos valores espaciados para maximizar la variedad visual.
          */
-        private val categories = listOf(
+        private var categories = listOf(
             // ==========================================
             // CATEGORÍA 1: Rock Classics
             // ==========================================
@@ -233,4 +233,19 @@ class MockMusicRepository : MusicRepository {
             )
         )
     }
+ // implementación
+    override fun toggleFavorite(songId: String) {
+        categories = categories.map { category ->
+            category.copy(
+                songs = category.songs.map { song ->
+                    if (song.id == songId) {
+                        song.copy(isFavorite = !song.isFavorite)
+                    } else {
+                        song
+                    }
+                }
+            )
+        }
+    }
+
 }

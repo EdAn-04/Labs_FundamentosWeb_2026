@@ -209,4 +209,11 @@ class HomeViewModel(
     fun refresh() {
         loadCategories()
     }
+
+    fun toggleFavorite(songId: String) {
+        repository.toggleFavorite(songId)
+
+        val categories = repository.getCategories()
+        _uiState.value = HomeUiState.Success(categories)
+    }
 }
