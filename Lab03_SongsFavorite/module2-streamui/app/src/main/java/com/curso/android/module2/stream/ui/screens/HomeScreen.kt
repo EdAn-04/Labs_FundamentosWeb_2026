@@ -32,6 +32,10 @@ import com.curso.android.module2.stream.ui.viewmodel.HomeUiState
 import com.curso.android.module2.stream.ui.viewmodel.HomeViewModel
 import org.koin.compose.viewmodel.koinViewModel
 
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material3.Icon
 /**
  * ================================================================================
  * HOME SCREEN - Pantalla Principal
@@ -173,7 +177,8 @@ private fun ErrorContent(message: String) {
 @Composable
 private fun HomeContent(
     categories: List<Category>,
-    onSongClick: (Song) -> Unit
+    onSongClick: (Song) -> Unit,
+    onFavoriteClick: (String) -> Unit
 ) {
     /**
      * LAZYCOLUMN: Lista Vertical Eficiente
@@ -221,7 +226,9 @@ private fun HomeContent(
 @Composable
 private fun CategorySection(
     category: Category,
-    onSongClick: (Song) -> Unit
+    onSongClick: (Song) -> Unit,
+    onFavoriteClick: (String) -> Unit
+
 ) {
     Column(
         modifier = Modifier.fillMaxWidth()
@@ -255,7 +262,9 @@ private fun CategorySection(
             ) { song ->
                 SongCard(
                     song = song,
-                    onClick = { onSongClick(song) }
+                    onClick = { onSongClick(song) },
+                    onFavoriteClick = { songId ->
+                        onFavoriteClick(songId)
                 )
             }
         }
@@ -273,35 +282,48 @@ private fun CategorySection(
 @Composable
 private fun SongCard(
     song: Song,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    onFavoriteClick: (String) -> Unit
 ) {
     Column(
         modifier = Modifier
             .width(120.dp)
-            // clickable hace que toda la columna sea interactiva
-            // También añade feedback visual (ripple effect)
             .clickable(onClick = onClick),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Cover generado por código
-        SongCoverMock(
-            colorSeed = song.colorSeed,
-            size = 120.dp
-        )
+
+        Box {
+            SongCoverMock(
+                colorSeed = song.colorSeed,
+                size = 120.dp
+            )
+
+            Icon(
+                imageVector = if (song.isFavorite)
+                    Icons.Filled.Favorite
+                else
+                    Icons.Outlined.FavoriteBorder,
+                contentDescription = "Favorite",
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(6.dp)
+                    .clickable {
+                        onFavoriteClick(song.id)
+                    }
+            )
+        }
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Título de la canción
         Text(
             text = song.title,
             style = MaterialTheme.typography.bodyMedium,
             fontWeight = FontWeight.Medium,
             maxLines = 1,
-            overflow = TextOverflow.Ellipsis, // "..." si el texto es muy largo
+            overflow = TextOverflow.Ellipsis,
             modifier = Modifier.fillMaxWidth()
         )
 
-        // Artista
         Text(
             text = song.artist,
             style = MaterialTheme.typography.bodySmall,
@@ -312,3 +334,4 @@ private fun SongCard(
         )
     }
 }
+
