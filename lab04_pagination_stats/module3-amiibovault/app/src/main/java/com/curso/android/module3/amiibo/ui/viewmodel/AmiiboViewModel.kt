@@ -14,6 +14,8 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 /**
+ *
+ * observeDatabaseChanges()
  * ============================================================================
  * AMIIBO UISTATE - Estado de la UI (Sealed Interface)
  * ============================================================================
@@ -226,6 +228,8 @@ class AmiiboViewModel(
      *   de que el último suscriptor se va (optimización para rotación)
      * - emptyList(): Valor inicial mientras se carga
      */
+
+    /* eliminado
     private val amiibosFromDb: StateFlow<List<AmiiboEntity>> = repository
         .observeAmiibos()
         .stateIn(
@@ -233,6 +237,7 @@ class AmiiboViewModel(
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = emptyList()
         )
+*/
 
     /**
      * Inicialización del ViewModel.
@@ -241,8 +246,8 @@ class AmiiboViewModel(
      * Aquí configuramos la observación de datos y cargamos inicialmente.
      */
     init {
-        // Observar cambios en la base de datos
-        observeDatabaseChanges()
+        // Observar cambios en la base de datos, eliminado.
+
         // Cargar datos iniciales
         refreshAmiibos()
     }
@@ -255,6 +260,8 @@ class AmiiboViewModel(
      * Configura la observación reactiva del Flow de Room.
      * Cada vez que los datos cambian, actualiza el UiState.
      */
+
+    /* eliminado
     private fun observeDatabaseChanges() {
         viewModelScope.launch {
             amiibosFromDb.collect { amiibos ->
@@ -270,6 +277,7 @@ class AmiiboViewModel(
             }
         }
     }
+  */
 
     /**
      * =========================================================================
@@ -422,6 +430,8 @@ class AmiiboViewModel(
 
                 // Reiniciar paginación y cargar primera página
                 resetPagination()
+                /* IMPLEMENTACIÓN */
+                _currentPage.value = 0 // reiniciar el estado de paginación cuando se realiza una recarga completa de los datos.
                 val firstPageItems = repository.getAmiibosPage(0, _pageSize.value)
                 _loadedAmiibos.value = firstPageItems
                 _hasMorePages.value = repository.hasMorePages(0, _pageSize.value)
