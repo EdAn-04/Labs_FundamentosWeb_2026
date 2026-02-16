@@ -129,6 +129,7 @@ import androidx.compose.material3.OutlinedTextField
 fun AmiiboListScreen(
     onAmiiboClick: (String) -> Unit = {},
     viewModel: AmiiboViewModel = koinViewModel()
+
 ) {
     /**
      * collectAsStateWithLifecycle():
@@ -148,8 +149,10 @@ fun AmiiboListScreen(
 
     // Estado para el dropdown del tamaño de página
     var showPageSizeDropdown by remember { mutableStateOf(false) }
+
     val snackbarHostState = remember { androidx.compose.material3.SnackbarHostState() }
 
+    var searchText by remember { mutableStateOf("") }
 
     Scaffold(
         snackbarHost = { androidx.compose.material3.SnackbarHost(hostState = snackbarHostState) },
@@ -228,6 +231,34 @@ fun AmiiboListScreen(
             )
         }
     ) { paddingValues ->
+        Column(modifier = Modifier.padding(paddingValues)) {
+
+            OutlinedTextField(
+                value = searchText,
+                onValueChange = {
+                    searchText = it
+                    viewModel.updateSearchQuery(it)
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(12.dp),
+                placeholder = { Text("Buscar Amiibo...") },
+                singleLine = true,
+                trailingIcon = {
+                    if (searchText.isNotEmpty()) {
+                        IconButton(onClick = {
+                            searchText = ""
+                            viewModel.updateSearchQuery("")
+                        }) {
+                            Icon(
+                                imageVector = Icons.Default.Close,
+                                contentDescription = "Clear"
+                            )
+                        }
+                    }
+                }
+            )
+        }
         /**
          * =====================================================================
          * MANEJO DE ESTADOS CON WHEN EXHAUSTIVO
