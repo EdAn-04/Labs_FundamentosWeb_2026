@@ -74,6 +74,9 @@ import com.curso.android.module3.amiibo.domain.error.ErrorType
 import com.curso.android.module3.amiibo.ui.viewmodel.AmiiboUiState
 import com.curso.android.module3.amiibo.ui.viewmodel.AmiiboViewModel
 import org.koin.androidx.compose.koinViewModel
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.OutlinedTextField
+
 
 /**
  * ============================================================================

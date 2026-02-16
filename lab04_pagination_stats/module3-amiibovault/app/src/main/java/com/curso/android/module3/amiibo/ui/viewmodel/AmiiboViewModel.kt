@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
@@ -146,6 +147,7 @@ sealed interface AmiiboUiState {
  * ============================================================================
  */
 class AmiiboViewModel(
+
     private val repository: AmiiboRepository
 ) : ViewModel() {
 
@@ -197,6 +199,8 @@ class AmiiboViewModel(
     private val _isLoadingMore = MutableStateFlow(false)
     val isLoadingMore: StateFlow<Boolean> = _isLoadingMore.asStateFlow()
 
+    private val searchQuery = MutableStateFlow("")
+
     /**
      * =========================================================================
      * ERROR DE PAGINACIÓN
@@ -229,15 +233,15 @@ class AmiiboViewModel(
      * - emptyList(): Valor inicial mientras se carga
      */
 
-    /* eliminado
-    private val amiibosFromDb: StateFlow<List<AmiiboEntity>> = repository
-        .observeAmiibos()
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = emptyList()
-        )
-*/
+
+    private val amiibosFromDb = searchQuery.flatMapLatest { query ->
+        if (query.isBlank()) {
+            repository.observeAmiibos()
+        } else {
+            repository.searchAmiibos(query)
+        }
+    }
+
 
     /**
      * Inicialización del ViewModel.
@@ -483,6 +487,10 @@ class AmiiboViewModel(
                 )
             }
         }
+    }
+
+    fun updateSearchQuery(query: String) {
+        searchQuery.value = query
     }
 }
 

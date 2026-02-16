@@ -185,6 +185,15 @@ interface AmiiboDao {
     /**
      * Inserta o reemplaza el detalle de un Amiibo.
      */
+
+    @Query("""
+    SELECT * FROM amiibos
+    WHERE name LIKE '%' || :query || '%'
+    ORDER BY name ASC
+    """)
+    fun searchAmiibos(query: String): Flow<List<AmiiboEntity>>
+
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertDetail(detail: AmiiboDetailEntity)
 }

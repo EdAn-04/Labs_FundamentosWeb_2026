@@ -75,6 +75,10 @@ class AmiiboRepository(
      * Cuando llamamos a refreshAmiibos(), Room detecta los cambios
      * y este Flow emite automáticamente la nueva lista.
      */
+
+    fun searchAmiibos(query: String): Flow<List<AmiiboEntity>> {
+        return amiiboDao.searchAmiibos(query)
+    }
     fun observeAmiibos(): Flow<List<AmiiboEntity>> {
         return amiiboDao.getAllAmiibos()
     }
@@ -269,7 +273,8 @@ class AmiiboRepository(
     fun getAmiiboCount(): Flow<Int> {
         return amiiboDao.getCount()
     }
-}
+
+ }
 
 /**
  * ============================================================================
