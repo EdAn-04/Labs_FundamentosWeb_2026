@@ -308,14 +308,22 @@ fun AmiiboListScreen(
              */
             is AmiiboUiState.Error -> {
                 if (state.cachedAmiibos.isNotEmpty()) {
-                    // Hay datos en cache: mostrar datos + mensaje de error
-                    Column(modifier = Modifier.padding(paddingValues)) {
-                        ErrorBanner(
+
+                    // 🔔 Mostrar Snackbar no bloqueante
+                    LaunchedEffect(state.message) {
+                        val result = snackbarHostState.showSnackbar(
                             message = state.message,
-                            errorType = state.errorType,
-                            isRetryable = state.isRetryable,
-                            onRetry = { viewModel.refreshAmiibos() }
+                            actionLabel = if (state.isRetryable) "Retry" else null,
+                            withDismissAction = true
                         )
+
+                        if (result == androidx.compose.material3.SnackbarResult.ActionPerformed) {
+                            viewModel.refreshAmiibos()
+                        }
+                    }
+
+                    // Mantener el grid visible con datos cacheados
+                    Box(modifier = Modifier.padding(paddingValues)) {
                         AmiiboGrid(
                             amiibos = state.cachedAmiibos,
                             onAmiiboClick = onAmiiboClick,
@@ -327,8 +335,9 @@ fun AmiiboListScreen(
                             modifier = Modifier.fillMaxSize()
                         )
                     }
+
                 } else {
-                    // Sin cache: pantalla de error completa
+                    // Sin cache → error full screen
                     ErrorContent(
                         message = state.message,
                         errorType = state.errorType,
@@ -338,6 +347,7 @@ fun AmiiboListScreen(
                     )
                 }
             }
+
         }
     }
 }
