@@ -479,7 +479,7 @@ class AmiiboViewModel(
             } catch (e: Exception) {
                 // Catch-all para errores no tipados (no debería llegar aquí)
                 val cachedAmiibos = _loadedAmiibos.value
-                _uiState.value = AmiiboUiState.Error(
+                _uiState.value = AmiiboUiState.Error( /* aca */
                     message = e.message ?: "Error desconocido al cargar datos",
                     errorType = ErrorType.UNKNOWN,
                     isRetryable = true,
