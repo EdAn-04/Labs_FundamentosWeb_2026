@@ -19,6 +19,10 @@ import { HomePage } from '@/pages/HomePage';
 import { NewPropertyPage } from '@/pages/NewPropertyPage';
 import { PropertyDetailPage } from '@/pages/PropertyDetailPage';
 
+import { ComparePage } from "@/pages/ComparePage";
+
+<Route path="/compare" element={<ComparePage />} />
+
 /**
  * Componente principal de la aplicación.
  *
