@@ -121,16 +121,21 @@ export const propertyRepository = {
   /**
    * Busca todas las propiedades con filtros opcionales.
    */
-  async findAll(filters?: PropertyFilters): Promise<Property[]> {
-    const where = buildWhereClause(filters);
+  async findAll(
+  filters?: PropertyFilters,
+  options?: { skip?: number; take?: number }
+): Promise<Property[]> {
+  const where = buildWhereClause(filters);
 
-    const properties = await prisma.property.findMany({
-      where,
-      orderBy: { createdAt: 'desc' },
-    });
+  const properties = await prisma.property.findMany({
+    where,
+    orderBy: { createdAt: 'desc' },
+    skip: options?.skip,
+    take: options?.take,
+  });
 
-    return properties.map(toProperty);
-  },
+  return properties.map(toProperty);
+},
 
   /**
    * Busca una propiedad por ID.
@@ -195,6 +200,15 @@ export const propertyRepository = {
     });
     return property !== null;
   },
+
+  async count(filters?: PropertyFilters): Promise<number> {
+    const where = buildWhereClause(filters);
+    
+    return prisma.property.count({
+      where,
+    });
+  }
+
 };
 
 // =============================================================================
