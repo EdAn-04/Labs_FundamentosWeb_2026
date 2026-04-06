@@ -35,7 +35,25 @@ import { propertyRepository } from '../repositories/propertyRepository.js';
 
 export async function getAllProperties(req: Request, res: Response): Promise<void> {
   try {
-    // Extraemos filtros de los query params
+    // 🔹 PAGINACIÓN
+    const page = req.query.page ? Number(req.query.page) : 1;
+    const limit = req.query.limit ? Number(req.query.limit) : 10;
+
+    // 🔹 VALIDACIÓN
+    if (page <= 0 || limit <= 0 || isNaN(page) || isNaN(limit)) {
+      res.status(400).json({
+        success: false,
+        error: {
+          message: 'Parámetros de paginación inválidos',
+          code: 'VALIDATION_ERROR',
+        },
+      });
+      return;
+    }
+
+    const skip = (page - 1) * limit;
+
+    // 🔹 FILTROS (igual que ya tenías)
     const filters: PropertyFilters = {
       search: req.query.search as string | undefined,
       propertyType: req.query.propertyType as PropertyFilters['propertyType'],
@@ -46,13 +64,25 @@ export async function getAllProperties(req: Request, res: Response): Promise<voi
       city: req.query.city as string | undefined,
     };
 
-    // Delegamos al repositorio
-    const properties = await propertyRepository.findAll(filters);
+    // 🔹 IMPORTANTE: necesitas total + datos paginados
+    const [properties, total] = await Promise.all([
+      propertyRepository.findAll(filters, { skip, take: limit }),
+      propertyRepository.count(filters),
+    ]);
+
+    const pages = Math.ceil(total / limit);
 
     res.json({
       success: true,
       data: properties,
+      meta: {
+        total,
+        page,
+        limit,
+        pages,
+      },
     });
+
   } catch (error) {
     console.error('Error al obtener propiedades:', error);
     res.status(500).json({
